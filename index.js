@@ -1,8 +1,16 @@
 const express = require('express') //package.json의 의존성에 있는 자료 중, 가져올 자료 선택
 const app = express() //가져온 의존성 실행
 const port = 5000
-
+const bodyParser = require('body-parser');
 const { User } = require('./models/User');
+
+//application/x-www/form-urlencoded
+//바디 파싱 설정
+app.use(bodyParser.urlencoded({extended: true})); 
+
+//application/json (응답에서 json을 사용할 수 있도록 설정)
+app.use(bodyParser.json())
+
 
 const mongoose = require('mongoose')
 mongoose.connect('mongodb+srv://cyj:jonghyo93419**@start-react.zrqv2.mongodb.net/start-react?retryWrites=true&w=majority', {
@@ -17,6 +25,15 @@ app.get('/', (req, res) => res.send('Hello World!! 안녕하세요!'))
 app.post('/register', (req, res) => {
     //회원가입할 때 필요한 정보들을  client에서 가져오면
     //그것들을 데이터 베이스에 넣어준다.
+    
+    const user = new User(req.body);
+
+    user.save((err, doc) => {
+        if(err) return res.json({ success : false, err}) // 실패 시
+        return res.status(200).json({
+            success: true
+        }) // 성공 시 
+    }); // save(콜백함수)는 MongoDB에서 오는 함수
 
 })
 
