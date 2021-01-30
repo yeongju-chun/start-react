@@ -1,8 +1,8 @@
 const express = require('express') //package.json의 의존성에 있는 자료 중, 가져올 자료 선택
 const app = express() //가져온 의존성 실행
 const port = 5000
-const bodyParser = require('body-parser');
-const { User } = require('./models/User');
+const bodyParser = require('body-parser'); //body-parser 가져오기
+const { User } = require('./models/User'); //User 가져오기
 
 //application/x-www/form-urlencoded
 //바디 파싱 설정
