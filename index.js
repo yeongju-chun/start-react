@@ -4,6 +4,8 @@ const port = 5000
 const bodyParser = require('body-parser'); //body-parser 가져오기
 const { User } = require('./models/User'); //User 가져오기
 
+const config = require('./config/key');
+
 //application/x-www/form-urlencoded
 //바디 파싱 설정
 app.use(bodyParser.urlencoded({extended: true})); 
@@ -13,7 +15,7 @@ app.use(bodyParser.json())
 
 
 const mongoose = require('mongoose')
-mongoose.connect('mongodb+srv://cyj:jonghyo93419**@start-react.zrqv2.mongodb.net/start-react?retryWrites=true&w=majority', {
+mongoose.connect(config.mongoURI, {
     useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false //에러 방지
 }).then(() => console.log('Mongo DB Connected...'))
  .catch(err => console.log(err)) //확인이 잘 된건지 확인
