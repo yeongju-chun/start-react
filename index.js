@@ -3,6 +3,7 @@ const app = express()
 const port = 5000
 const bodyParser = require('body-parser'); 
 const cookieparser = require('cookie-parser');
+const { auth } = require('./middleware/auth'); // middleware import
 const { User } = require('./models/User'); 
 
 const config = require('./config/key');
@@ -64,6 +65,27 @@ app.post('/login', (req, res) =>  {
     })
 
 });
+
+
+// role = 0 -> 일반 유저, role != 0 -> 관리자
+app.get('api/users/auth', auth, (req, res) => {
+    // 여기서 auth는 미드웨어(?)
+    // 미드웨어 : 콜백 function 하기 전에, 중간 작업을 해주는 것
+    // middleware라는 폴더에서 관리
+
+    //미들웨어를 거쳐, 여기까지 왔다는 얘기는, 인증에 성공했다는 말.
+    res.status(200).json({
+        _id : req.user._id,
+        isAdmin : req.user.role === 0 ? false : true,
+        isAuth : true,
+        enail : req.user.email,
+        name : req.user.name,
+        lastname : req.user.lastname,
+        role : req.user.role,
+        image : req.user.image
+    });
+});
+
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
