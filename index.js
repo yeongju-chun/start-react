@@ -21,7 +21,7 @@ mongoose.connect(config.mongoURI, {
 
 app.get('/', (req, res) => res.send('Hello World!! 안녕하세요!'))
 
-app.post('/register', (req, res) => {
+app.post('/api/users/register', (req, res) => {
     
     const user = new User(req.body);
 
@@ -35,7 +35,7 @@ app.post('/register', (req, res) => {
 })
 
 
-app.post('/login', (req, res) =>  {
+app.post('/api/users/login', (req, res) =>  {
     //1. 데이터베이스에서 요청한 이메일 찾기
     User.findOne({email : req.body.email}, (err, userInfo) => {
         if(!userInfo) {
@@ -67,17 +67,17 @@ app.post('/login', (req, res) =>  {
 });
 
 
-// role = 0 -> 일반 유저, role != 0 -> 관리자
-app.get('api/users/auth', auth, (req, res) => {
+app.get('/api/users/auth', auth, (req, res) => {
     // 여기서 auth는 미드웨어(?)
     // 미드웨어 : 콜백 function 하기 전에, 중간 작업을 해주는 것
     // middleware라는 폴더에서 관리
-
+    
     //미들웨어를 거쳐, 여기까지 왔다는 얘기는, 인증에 성공했다는 말.
     res.status(200).json({
         _id : req.user._id,
         isAdmin : req.user.role === 0 ? false : true,
-        isAuth : true,
+        // role = 0 -> 일반 유저, role != 0 -> 관리자
+        isAuth : true, 
         enail : req.user.email,
         name : req.user.name,
         lastname : req.user.lastname,
@@ -86,6 +86,13 @@ app.get('api/users/auth', auth, (req, res) => {
     });
 });
 
+app.get('/api/users/logout', auth, (req, res) => {
+    // MongoDB 함수
+    User.findOneAndUpdate({ _id : req.user._id }, { token : "" }, (err, user) => {
+        if(err) return res.json({ success : false, err });
+        return res.status(200).send({ success : true });
+    });
+});
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 

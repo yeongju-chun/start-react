@@ -79,7 +79,7 @@ userSchema.methods.generateToken = function(cb) {
  
 
 // auth 기능을 위한 메소드
-userSchema.static.findByToken = function(token, cb) {
+userSchema.statics.findByToken = function(token, cb) {
     var user = this;
 
     // 토큰 디코딩
